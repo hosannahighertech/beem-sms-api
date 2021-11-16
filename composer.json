@@ -1,0 +1,31 @@
+{
+    "name": "hosannahighertech/beem-sms-api",
+    "description": "Library to work with BEEM SMS API, see beem.africa",
+    "keywords": [
+        "BEEM",
+        "library",
+        "SMS Gateway"
+    ],
+    "homepage": "https://github.com/hosannahighertech",
+    "type": "library",
+    "license": "Apache 2.0",
+    "authors": [
+        {
+            "name": "Stefano Mtangoo",
+            "email": "support@hosannahighertech.co.tz",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/hosannahighertech/beem-sms-api/issues?state=open",
+        "source": "https://github.com/hosannahighertech/beem-sms-api"
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "hosanna\\sms\\beem\\": "src/"
+        }
+    },
+}
