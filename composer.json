@@ -27,5 +27,5 @@
         "psr-4": {
             "hosanna\\sms\\beem\\": "src/"
         }
-    },
+    }
 }
