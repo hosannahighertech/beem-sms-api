@@ -84,7 +84,7 @@ class Client
         }
     }
 
-    public function getBalance(): string|false
+    public function getBalance(): string
     {
         try {
             $response = $this->httpClient->request('GET', '/public/v1/vendors/balance');
@@ -94,18 +94,18 @@ class Client
 
             if ($code != 200) {
                 $this->error = "Code: {$code} - Reason: {$reason}";
-                return false;
+                return '';
             }
             $body = (string)$response->getBody();
             $json = json_decode($body, true);
             if (!isset($json['data']['credit_balance'])) {
                 $this->error = "Invalid response";
-                return false;
+                return '';
             }
             return $json['data']['credit_balance'];
         } catch (Exception $e) {
             $this->error = $e->getMessage();
-            return false;
+            return '';
         }
     }
 }
