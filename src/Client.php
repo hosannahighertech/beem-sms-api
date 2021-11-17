@@ -8,8 +8,8 @@
 
 namespace hosanna\sms\beem;
 
+use Exception;
 use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Exception\ClientException;
 
 /**
  * A Library for sending SMS using BEEM API, see https://beem.africa
@@ -43,8 +43,7 @@ class Client
         $this->httpClient = new HttpClient([
             // Base URI is used with relative requests
             'base_uri' => 'https://apisms.beem.africa',
-            // You can set any number of default request options.
-            'timeout'  => 2.0,
+            'timeout'  => 300.0, //5min
             'headers' => [
                 'Authorization' => "Basic {$auth}",
                 'Content-Type' => 'application/json',
@@ -79,7 +78,7 @@ class Client
                 return false;
             }
             return true;
-        } catch (ClientException $e) {
+        } catch (Exception $e) {
             $this->error = $e->getMessage();
             return false;
         }
@@ -104,7 +103,7 @@ class Client
                 return false;
             }
             return $json['data']['credit_balance'];
-        } catch (ClientException $e) {
+        } catch (Exception $e) {
             $this->error = $e->getMessage();
             return false;
         }
