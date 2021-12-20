@@ -20,7 +20,7 @@ Then create new message. First Parameter is Sender ID or Mobile number of the se
 $message = new Message('SENDER_ID_OR_MOBILE_NO', 'This is my SMS text body');
 ```
 
-Next add Receivers number. First parameter is your special ID (see BEEM Docs) and the other one is receiver's mobile.
+Next add Receivers number. First parameter is your special ID (see [BEEM Docs](https://docs.beem.africa/)) and the other one is receiver's mobile.
 
 ```php
 $message->addSender('SPECIAL_ID', '255xxxxxx');
