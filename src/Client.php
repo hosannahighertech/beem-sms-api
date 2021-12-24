@@ -15,22 +15,6 @@ use GuzzleHttp\Client as HttpClient;
  * A Library for sending SMS using BEEM API, see https://beem.africa
  * This class is the core part of sending SMS. It takes the messages and send them over he API
  *
- * Example:
- *
- * ```php
- * use yii\bootstrap\ActiveForm;
- *
- * $form = ActiveForm::begin(['layout' => 'horizontal']);
- *
- * // Form field without label
- * echo $form->field($model, 'demo', [
- *     'inputOptions' => [
- *         'placeholder' => $model->getAttributeLabel('demo'),
- *     ],
- * ])->label(false);
- *
- * ```
- *
  */
 class Client
 {
