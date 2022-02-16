@@ -23,8 +23,9 @@ $message = new Message('SENDER_ID_OR_MOBILE_NO', 'This is my SMS text body');
 Next add Receivers number. First parameter is your special ID (see [BEEM Docs](https://docs.beem.africa/)) and the other one is receiver's mobile.
 
 ```php
-$message->addRecipient('SPECIAL_ID', '255xxxxxx');
+$message->addRecipient('255xxxxxx', 'RECIPIENT_ID', 'COUNTRY_CODE);
 ```
+Note that recipient ID and country code are optionals. You can get list of internationalized list of recipients and their IDs from `getRecipients()` method of message object.
 
 Finally send the message. If failed, the method `getLastError()` should contain the error message
 

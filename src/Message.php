@@ -41,12 +41,23 @@ class Message
         return $this->message;
     }
 
-    public function addRecipient(string $id, string $mobileNumber, $country = null): bool
+    public function generateRecipientIdFor(string $mobile): string
+    {
+        $salt = microtime();
+        return hash('SHA256', "{$this->message}+{$this->sender}+{$salt}--{$mobile}", false);
+    }
+
+    public function addRecipient(string $mobileNumber, string $id = null,  $country = null): bool
     {
         if ($country != null) {
             $mobileNumber = $this->getNormalizeMobile($mobileNumber, $country);
             if (empty($mobileNumber)) return false;
         }
+
+        if (empty($id)) {
+            $id = $this->generateRecipientIdFor($mobileNumber);
+        }
+
         $this->recipients[] = [
             'recipient_id' => $id,
             'dest_addr' => $mobileNumber,
