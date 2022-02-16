@@ -41,7 +41,7 @@ class Message
         return $this->message;
     }
 
-    public function addSender(string $id, string $mobileNumber, $country = null): bool
+    public function addRecipient(string $id, string $mobileNumber, $country = null): bool
     {
         if ($country != null) {
             $mobileNumber = $this->getNormalizeMobile($mobileNumber, $country);
