@@ -21,7 +21,8 @@
         "source": "https://github.com/hosannahighertech/beem-sms-api"
     },
     "require": {
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "giggsey/libphonenumber-for-php": "^8.12"
     },
     "autoload": {
         "psr-4": {
