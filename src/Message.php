@@ -20,14 +20,10 @@ class Message
     private string $message;
     private array $recipients = [];
 
-    public function __construct(string $sender, string $message, $country = null)
+    public function __construct(string $sender, string $message)
     {
         $this->sender = $sender;
         $this->message = $message;
-
-        if ($country != null) {
-            $this->sender = $this->getNormalizeMobile($sender, $country);
-        }
     }
 
     public function getSender(): string
