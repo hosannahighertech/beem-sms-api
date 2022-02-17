@@ -10,6 +10,9 @@ namespace hosanna\sms\beem;
 
 use Exception;
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Middleware;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
 use Monolog\Logger;
@@ -35,13 +38,7 @@ class Client
     {
         $auth = base64_encode("{$apiKey}:{$secretKey}");
 
-        if (!empty($logPath)) {
-            // create a log channel
-            $this->logger = new Logger('sms-logger');
-            $this->logger->pushHandler(new StreamHandler($logPath, Logger::DEBUG));
-        }
-
-        $this->httpClient = new HttpClient([
+        $options = [
             // Base URI is used with relative requests
             'base_uri' => 'https://apisms.beem.africa',
             'timeout'  => 300.0, //5min
@@ -49,7 +46,25 @@ class Client
                 'Authorization' => "Basic {$auth}",
                 'Content-Type' => 'application/json',
             ],
-        ]);
+        ];
+
+        if (!empty($logPath)) {
+            // create a log channel
+            $this->logger = new Logger('sms-logger');
+            $this->logger->pushHandler(new StreamHandler($logPath, Logger::DEBUG));
+
+            $stack = HandlerStack::create();
+            $stack->push(
+                Middleware::log(
+                    new Logger('Logger'),
+                    new MessageFormatter('{req_body} - {res_body}')
+                )
+            );
+
+            $options['handler'] = $stack;
+        }
+
+        $this->httpClient = new HttpClient($options);
     }
 
     public function getLastError(): string
