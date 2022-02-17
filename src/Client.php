@@ -101,7 +101,7 @@ class Client
                 $this->error = "Invalid response: {$body}";
                 return [];
             }
-            return $json['data'];
+            return $json;
         } catch (Exception $e) {
             $this->error = $e->getMessage();
             return [];
@@ -166,7 +166,7 @@ class Client
                 $this->error = "Invalid response";
                 return [];
             }
-            return $json['data'];
+            return $json;
         } catch (Exception $e) {
             $this->error = $e->getMessage();
             return [];
