@@ -57,7 +57,7 @@ class Client
         return $this->error;
     }
 
-    public function send(Message $message): bool
+    public function send(Message $message): array
     {
         $body = [
             'source_addr' => $message->getSender(),
@@ -77,12 +77,19 @@ class Client
 
             if ($code != 200) {
                 $this->error = "Code: {$code} - Reason: {$reason}";
-                return false;
+                return [];
             }
-            return true;
+
+            $body = (string)$response->getBody();
+            $json = json_decode($body, true);
+            if (!isset($json['data'])) {
+                $this->error = "Invalid response";
+                return [];
+            }
+            return $json['data'];
         } catch (Exception $e) {
             $this->error = $e->getMessage();
-            return false;
+            return [];
         }
     }
 
@@ -140,7 +147,7 @@ class Client
             }
             $body = (string)$response->getBody();
             $json = json_decode($body, true);
-            if (!isset($json['data']['credit_balance'])) {
+            if (!isset($json['data'])) {
                 $this->error = "Invalid response";
                 return [];
             }
