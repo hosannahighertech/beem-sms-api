@@ -10,6 +10,11 @@ namespace hosanna\sms\beem;
 
 use Exception;
 use GuzzleHttp\Client as HttpClient;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberUtil;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 
 /**
  * A Library for sending SMS using BEEM API, see https://beem.africa
@@ -21,9 +26,21 @@ class Client
     private HttpClient $httpClient;
     private string $error = '';
 
-    public function __construct(string $apiKey, string $secretKey)
+    /***
+     * @var logger Log
+     */
+    private $logger = null;
+
+    public function __construct(string $apiKey, string $secretKey, string $logPath = '')
     {
         $auth = base64_encode("{$apiKey}:{$secretKey}");
+
+        if (!empty($logPath)) {
+            // create a log channel
+            $this->logger = new Logger('sms-logger');
+            $this->logger->pushHandler(new StreamHandler($logPath, Logger::DEBUG));
+        }
+
         $this->httpClient = new HttpClient([
             // Base URI is used with relative requests
             'base_uri' => 'https://apisms.beem.africa',
@@ -49,6 +66,7 @@ class Client
             'message' => $message->getMessage(),
             'recipients' => $message->getRecipients(),
         ];
+
         try {
             $response = $this->httpClient->request('POST', '/v1/send', [
                 'body' => json_encode($body),
@@ -90,6 +108,40 @@ class Client
         } catch (Exception $e) {
             $this->error = $e->getMessage();
             return '';
+        }
+    }
+
+    public function checkStatus($messageId, $senderId, $country): array
+    {
+        try {
+            $phoneNumberUtil = PhoneNumberUtil::getInstance();
+            $phoneNumberObject = $phoneNumberUtil->parse($senderId, $country);
+            if ($phoneNumberUtil->isValidNumber($phoneNumberObject)) {
+                $senderId = str_replace('+', '', $phoneNumberUtil->format($phoneNumberObject, PhoneNumberFormat::E164));
+            }
+
+            if (empty($senderId)) return [];
+
+            $url = "https://dlrapi.beem.africa/public/v1/delivery-reports?dest_addr={$senderId}&request_id={$messageId}";
+            $response = $this->httpClient->request('GET', $url);
+
+            $code = $response->getStatusCode(); // 200
+            $reason = $response->getReasonPhrase(); // OK
+
+            if ($code != 200) {
+                $this->error = "Code: {$code} - Reason: {$reason}";
+                return [];
+            }
+            $body = (string)$response->getBody();
+            $json = json_decode($body, true);
+            if (!isset($json['data']['credit_balance'])) {
+                $this->error = "Invalid response";
+                return [];
+            }
+            return $json['data'];
+        } catch (Exception $e) {
+            $this->error = $e->getMessage();
+            return [];
         }
     }
 }
