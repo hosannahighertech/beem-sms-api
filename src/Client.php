@@ -98,7 +98,7 @@ class Client
             $body = (string)$response->getBody();
             $json = json_decode($body, true);
             if (!isset($json['data'])) {
-                $this->error = "Invalid response";
+                $this->error = "Invalid response: {$body}";
                 return [];
             }
             return $json['data'];
