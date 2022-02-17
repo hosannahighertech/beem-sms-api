@@ -128,7 +128,13 @@ class Client
             $code = $response->getStatusCode(); // 200
             $reason = $response->getReasonPhrase(); // OK
 
-            if ($code != 200) {
+            if ($code == 404) {
+                return [
+                    'dest_addr' => $senderId,
+                    'status' => 'NOTFOUND',
+                    'request_id' => $messageId,
+                ];
+            } else if ($code != 200) {
                 $this->error = "Code: {$code} - Reason: {$reason}";
                 return [];
             }
